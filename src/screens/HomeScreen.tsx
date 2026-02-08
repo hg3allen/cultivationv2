@@ -1,13 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useVirtues } from '../store/VirtueContext';
 import WeekHeader from '../components/WeekHeader';
 import VirtueGrid from '../components/VirtueGrid';
 import WeekSummary from '../components/WeekSummary';
-import { Colors } from '../theme';
+import { Colors, Spacing, FontSize } from '../theme';
 
-export default function HomeScreen() {
-  const { loaded } = useVirtues();
+interface Props {
+  onOpenHistory: () => void;
+}
+
+export default function HomeScreen({ onOpenHistory }: Props) {
+  const { loaded, history } = useVirtues();
 
   if (!loaded) {
     return (
@@ -22,6 +26,15 @@ export default function HomeScreen() {
       <WeekHeader />
       <VirtueGrid />
       <WeekSummary />
+      <TouchableOpacity
+        style={styles.historyButton}
+        onPress={onOpenHistory}
+        activeOpacity={0.6}
+      >
+        <Text style={styles.historyText}>
+          Past Weeks{history.length > 0 ? ` (${history.length})` : ''}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -34,5 +47,15 @@ const styles = StyleSheet.create({
   center: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  historyButton: {
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  historyText: {
+    fontSize: FontSize.sm,
+    color: Colors.focus,
+    fontWeight: '600',
   },
 });
